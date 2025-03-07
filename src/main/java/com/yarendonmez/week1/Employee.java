@@ -1,6 +1,7 @@
 package com.yarendonmez.week1;
 
-public class Employee {String name;
+public class Employee {
+    String name;
     String position;
     double salary;
     int yearsWorked;
