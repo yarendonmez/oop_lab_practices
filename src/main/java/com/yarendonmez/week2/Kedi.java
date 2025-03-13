@@ -1,11 +1,11 @@
 package com.yarendonmez.week2;
 
 public class Kedi extends Hayvan {
-    public Kedi(String isim, int yas) {
+    String cins;
+    public Kedi(String isim, int yas, String cins) {
         super(isim, yas);
-//        this.cins = cins; sonra denemek için yoruma çektim
-
         System.out.println("Kedi sınıfı oluşturuldu!");
+          this.cins = cins;
     }
 
     @Override
