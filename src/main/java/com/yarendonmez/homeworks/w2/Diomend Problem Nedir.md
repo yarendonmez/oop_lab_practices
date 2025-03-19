@@ -1,26 +1,45 @@
-# CENG-106 - OBJECT ORIENTED PROGRAMMING
+# KALITIMDA DIAMOND PROBLEM
 
-## DIAMOND PROBLEM RAPORU
+## 1. Kalıtım Nedir
 
-**YAREN DÖNMEZ - 21118080035**
-
----
-
-## 1. Kalıtım Nedir?
-
-Kalıtım, nesneye yönelik programlamada bir sınıf içerisinde tanımlanmış değişken ve metotların, bu sınıftan kalıtım alan diğer bir sınıf içerisinde yeniden yazılmaya gerek kalmaksızın kullanılabilmesini sağlar. Türetilen alt sınıf (*subclass*), üst sınıfta (*superclass*) tanımlanmış özelliklere sahip olur.
+Kalıtım nesneye yönelik programlamada bir sınıf içerisinde tanımlanmış değişken ve metotların, bu sınıftan kalıtım alan diğer bir sınıf içerisinde yeniden yazılmaya gerek kalmaksızın kullanılabilmesidir. Türetilen alt sınıf (*subclass*), üst sınıfta (*superclass*) tanımlanmış özelliklere sahip olur.
 
 ## 2. Küçük Bir Kalıtım Örneği ve UML Diyagramı
 
-```java
-class Animal {
-    String name;
-    int height;
-    int weight;
+```csharp
+using System;
+public class Program
+{
+    public static void Main()
+    {
+        Cat cat = new Cat();
+        cat.name = "Tekir";
+        cat.weight = (Decimal)4.9;
+        cat.height = 50;
+        cat.eat();
+        cat.SayName();
+    }
 }
 
-class Felines extends Animal {
-    // Kedigiller sınıfı
+public class Animal
+{
+    public string name;
+    public decimal height;
+    public decimal weight;
+    public void eat()
+    {
+        this.weight++;
+    }
+    public void SayName()
+    {
+        Console.WriteLine("My name is " + this.name);
+    }
+}
+
+public class Felines : Animal
+{
+    public int tailLength;
+    public int Jump() { return 0; }
 }
 ```
 
@@ -36,37 +55,15 @@ class Felines extends Animal {
         Cheetah
 ```
 
+Yukarıda kodları bulunan kalıtım örneğinin UML diyagramı bu şekildedir. `Animal` sınıfından türeyen `Felines` (*Kedigiller*) sınıfı, `Animal` sınıfında bulunan `name`, `height`, `weight` gibi değişkenleri de kullanabilmektedir.
+
 ## 3. Multiple Inheritance (Çoklu Kalıtım)
 
-Peki, `Animal` sınıfından türeyen `WildAnimals` adlı bir sınıf daha olsa ve `Cheetah` sınıfı hem `Felines` hem de `WildAnimals` sınıfından kalıtım almak istese, nasıl olurdu?
+Peki, `Animal` sınıfından türeyen `WildAnimals` adlı bir sınıf daha olsa ve `Cheetah` adlı yeni oluşturacağımız sınıf, hem `Felines` (*Kedigiller*) hem de `WildAnimals` sınıfından kalıtım almak istese, nasıl olurdu?
 
-Çoklu kalıtım, bir sınıfın birden fazla sınıftan türemesi anlamına gelir. Ancak, üst ve alt sınıflarda aynı imzaya sahip yöntemler olduğunda derleyici, hangi sınıftaki metodu çağıracağını bilemez. Bu yüzden **C# ve Java gibi dillerde çoklu kalıtım desteklenmez.**
+Çoklu kalıtım, bir sınıfın bir veya birden fazla sınıftan kalıtım almasıdır. Buradaki sorunun sebebi, hem üst sınıflarda hem de alt sınıflarda aynı imzaya sahip yöntemlerin olması durumunda ortaya çıkar. Derleyici, metodu çağırırken hangi sınıftaki metodu çağıracağını bilemediğinden probleme yol açmaktadır. Bu yüzden **C#, Java gibi dillerde çoklu kalıtım desteklenmez.**
 
-```java
-class Felines extends Animal {
-    void sayName() {
-        System.out.println("Felines");
-    }
-}
-
-class WildAnimals extends Animal {
-    void sayName() {
-        System.out.println("WildAnimals");
-    }
-}
-
-class Cheetah extends Felines, WildAnimals { // Compile Error!
-}
-```
-
-**Compile Error:**
-```
-Compilation error: Class ‘Cheetah’ cannot have multiple base classes: ‘Felines’ and ‘WildAnimals’
-```
-
-## 4. Diamond Problemi Neden "Diamond" Adını Almıştır?
-
-Çoklu kalıtımın UML diyagramı çizildiğinde, ortaya **elmasa (diamond) benzer bir yapı** çıkmaktadır. Bu yüzden "Diamond Problemi" olarak adlandırılmıştır.
+**UML Diyagramı:**
 
 ```
         Animal
@@ -76,54 +73,102 @@ Compilation error: Class ‘Cheetah’ cannot have multiple base classes: ‘Fel
        Cheetah
 ```
 
+Cheetah sınıfı hem `Felines` hem de `WildAnimals` sınıfından kalıtım almak istediğinde **C# ve Java dilleri Compile Error verecektir.** Bunun sebebi, `Cheetah` sınıfının hangi `SayName` metodunu kullanacağını bilememesidir.
+
+**Compile Error:**
+```
+Compilation error (line 38, col 27): Class ‘Program.Cheetah’ cannot have multiple base classes: ‘Program.Felines’ and ‘WildAnimals’
+```
+
+## 4. Neden Diamond?
+
+Peki bu problemin adı neden **Diamond Problemi** olarak literatüre geçmiş? Bunun sebebi UML diyagramında çizim yapıldığında ortaya **elmasa benzer** bir şekil çıkmasıdır.
+
+**Şekil:**
+```
+        Animal
+       /      \
+  Felines   WildAnimals
+       \      /
+       Cheetah
+```
+
+---
+
 ## 5. Peki Bir Çözüm Var Mı?
 
-C# ve Java gibi dillerde çoklu kalıtım desteklenmediğinden, **çözüm interface (arayüz) kullanımıdır.**
+Peki ya alt sınıfın, üst iki sınıfa ait özellikleri metotlar konusunda karışıklık yaşamadan kullanmasını istersek ne yapmalıyız? Bu durumda **Java ve C# gibi diller çoklu kalıtıma izin vermediğinden çözüm, interface (arayüz) kullanımıdır.**
 
-### **Örnek: Araç Modeli Üzerinden Interface Kullanımı**
+### 5.1 Araç Modeli Örneği
+
+```java
+class A {
+    public String genelOzellikler;
+    public void genelFonksiyonlar() {
+        // Aracın genel fonksiyonları
+    }
+}
+
+class B extends A {
+    public void otomatikPark() {
+        // Otomatik park sistemi
+    }
+}
+
+class C extends A {
+    public void otomatikSilecek() {
+        // Otomatik silecek sistemi
+    }
+}
+```
+
+Firma, `D` model bir araç geliştirdiğinde hem `B` hem de `C` özelliklerini almak istiyor. Ancak **Java ve C# gibi dillerde çoklu kalıtıma izin verilmediği için interface (arayüz) kullanılır.**
+
+**Arayüz Kullanımı ile Diamond Problemi Çözümü:**
 
 ```java
 interface IA {
-    void genelFonksiyonlar();
+    public String genelOzellikler;
+    public void genelFonksiyonlar();
 }
 
 interface IB extends IA {
-    void otomatikPark();
+    public void otomatikPark();
 }
 
 interface IC extends IA {
-    void otomatikSilecek();
+    public void otomatikSilecek();
 }
 
 interface ID extends IB, IC {}
 
 class A implements IA {
+    public String genelOzellikler;
     public void genelFonksiyonlar() {
-        // Araç genel fonksiyonları
+        // Aracın genel fonksiyonları
     }
 }
 
 class B implements IB {
+    public String genelOzellikler;
     public void genelFonksiyonlar() {}
     public void otomatikPark() {}
 }
 
 class C implements IC {
+    public String genelOzellikler;
     public void genelFonksiyonlar() {}
     public void otomatikSilecek() {}
 }
 
 class D implements ID {
+    public String genelOzellikler;
     public void genelFonksiyonlar() {}
     public void otomatikPark() {}
     public void otomatikSilecek() {}
 }
 ```
 
-**Interface Kullanımı ile Diamond Problemi Çözümü:**
-- `D` sınıfı hem `B` hem de `C` sınıfının özelliklerine sahiptir.
-- Hangi metodun çağrılacağı belirsiz olmaz çünkü her sınıf, arayüzü (*interface*) implement ederek metodları açıkça tanımlar.
+Bu yöntem sayesinde **Diamond Problemi önlenmiş olur.** Interface kullanarak, sınıfların birbirinden bağımsız ancak belirlenen kurallara göre genişletilebilir olmasını sağlarız.
 
-## **Kaynakça**
-1. [Multiple Inheritance ve Diamond Problemi](https://medium.com/@celikalper/multiple-inheritance-ve-diamond-problemi-34698bc957d)
-2. [Kalıtımda Diamond Problemi](https://yusufbilgen.wordpress.com/2022/11/30/kalitimda-diamond-problemi/)
+Arayüzleri kullanmadan doğrudan kalıtım ile sorunu çözmek istediğimizde metodların karışması diyebileceğimiz diamond problemi ile karşılaşırız. Örneğin A sınıfındaki `genelFonksiyonlar` metodunun B ve C sınıfında farklı override edildiğini düşünelim. Bu durumda C++ gibi dillerde çoklu kalıtım desteklendiğinden B ve C sınıfından aynı anda miras alan D sınıfında `genelFonksiyonlar` metodunun hangi versiyonunun çağırılacağı belirsiz bir hale gelir. B’nin override ettiği metodu mu, yoksa C’nin mi? Ancak interface kullandığımızda, her sınıfın bu metodu nasıl uygulayacağını açıkça belirtmesi gerektiğinden, bu tür bir problemle karşılaşmayız.
