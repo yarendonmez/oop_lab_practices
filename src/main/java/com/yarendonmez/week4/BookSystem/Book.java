@@ -15,7 +15,7 @@ public class Book {
 
     // A method showInfo() that prints book details
     public void showInfo() {
-        System.out.println("Information the book:");
+        System.out.println("Book Information:");
         System.out.println("Title: " + title);
         System.out.println("Author: " + author);
         System.out.println("Page count:  " + pageCount);
