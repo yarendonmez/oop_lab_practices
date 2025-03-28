@@ -13,7 +13,8 @@ public class EBook extends Book {
         this.format = format;
     }
 
-    // Override the showInfo() method:
+    // Override the showInfo() method:
+    //Access the inherited variables using super.title, super.author, etc.
     @Override
     public void showInfo() {
         System.out.println("EBook Title: " + super.title);
