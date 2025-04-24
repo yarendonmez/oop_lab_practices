@@ -8,13 +8,14 @@ public class Car {
 
     //getter carColor
     public String getCarColor(String model){
-        System.out.println(model + "için arama yapılıyor...");
+        System.out.println(model + " için arama yapılıyor...");
         return carColor;
     }
 
     //setter carColor
     public String setCarColor(String carColor){
         this.carColor = carColor;
+        return this.carColor;
     }
 
 }
